@@ -9,6 +9,9 @@ namespace mx {
         enter(row, what[0]);
         if ((mx->tail != nullptr && row != mx->tail->number_row) || mx->head == nullptr) {
             alloc(new_line);
+            new_line->head = nullptr;
+            new_line->tail = nullptr;
+            new_line->next = nullptr;
             if (mx->tail && mx->head) {
                 new_line->number_row = row;
                 mx->tail->next = new_line;
@@ -19,10 +22,6 @@ namespace mx {
         if (!mx->head) {
             mx->head = new_line;
             mx->tail = new_line;
-        }
-        if (mx->head && mx->tail && mx->head != mx->tail) {
-            mx->tail->next = new_line;
-            mx->tail = mx->tail->next;
         }
         Element *temp = nullptr;
         alloc(temp);
@@ -148,6 +147,7 @@ namespace mx {
     Line *smartCopyLine (Line *old_line) {
         Line *sorted = nullptr;
         alloc(sorted);
+        sorted->number_row = old_line->number_row;
         sorted->head = nullptr;
         sorted->next = nullptr;
         sorted->tail = nullptr;
@@ -211,6 +211,8 @@ namespace mx {
             }
             temp = temp->next;
         }
+        cout << endl;
+        cout << "Your new matrix:" << endl;
         printMatrix(new_m, dim->lines, dim->columns);
         delMatrix(new_m);
         return 0;
