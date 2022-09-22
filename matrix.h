@@ -8,22 +8,28 @@ namespace mx {
     using std::endl;
     using std::bad_alloc;
 
-    typedef struct Element {
+    struct Element {
         int value;
         int c_coordinate;
         Element *next;
-    } Element;
+    };
 
-    typedef struct Line {
+    struct Line {
         int number_row;
         Element *head;
+        Element *tail;
         Line *next;
-    } Line;
+    };
 
-    typedef struct Matrix {
+    struct Matrix {
         Line *head;
         Line *tail;
-    } Matrix;
+    };
+
+    struct Dim {
+        int lines;
+        int columns;
+    };
 
     template <class T>
     int alloc (T *&a) {
@@ -46,6 +52,11 @@ namespace mx {
         } else
             return 0;
     }
+
+    int addElement (Matrix *mx);
+    int printMatrix(Matrix *mx, int lines, int columns);
+    int delMatrix (Matrix *mx);
+    int individual (Matrix *mx, Dim *dim, int i_line);
 }
 
 #endif //LAB1_2_MARIX_H
