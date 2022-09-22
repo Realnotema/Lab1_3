@@ -27,11 +27,13 @@ int Menu (Matrix *mx, Dim *dim) {
                 break;
             case 4:
                 delMatrix(mx);
+                delete dim;
                 return 0;
             default:
                 cout << "Try again" << endl;
         }
     } while (flag != 4);
+    return 0;
 }
 
 int main() {
