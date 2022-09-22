@@ -9,7 +9,11 @@ namespace mx {
         enter(row, what[0]);
         if ((mx->tail != nullptr && row != mx->tail->number_row) || mx->head == nullptr) {
             alloc(new_line);
-            new_line
+            if (mx->tail && mx->head) {
+                new_line->number_row = row;
+                mx->tail->next = new_line;
+                mx->tail = new_line;
+            }
         } else
             new_line = mx->tail;
         if (!mx->head) {
@@ -62,11 +66,30 @@ namespace mx {
         return 0;
     }
 
+    int delMatrix (Matrix *mx) {
+        Line *line = mx->head;
+        Element *el_to_delete = nullptr;
+        Element *el_save = nullptr;
+        while (line) {
+            el_to_delete = line->head;
+            el_save = line->head->next;
+            while (el_to_delete) {
+                delete el_to_delete;
+                el_to_delete = el_save;
+                if (el_save)
+                    el_save = el_save->next;
+            }
+            line = line->next;
+        }
+        delete mx;
+    }
+
     Element *copyElement (Element *el) {
         if (el == nullptr)
             return nullptr;
         Element *new_el = nullptr;
         alloc(new_el);
+        new_el->next = nullptr;
         new_el->value = el->value;
         new_el->c_coordinate = 0;
         return new_el;
@@ -75,10 +98,14 @@ namespace mx {
     Line *copyLine (Line *old_line) {
         Line *new_line = nullptr;
         alloc(new_line);
+        new_line->head = nullptr;
+        new_line->next = nullptr;
+        new_line->tail = nullptr;
         new_line->number_row = old_line->number_row;
         Element *temp = old_line->head;
         Element *new_el = nullptr;
         alloc(new_el);
+        new_el->next = nullptr;
         while (temp) {
             new_el = copyElement(temp);
             if (new_line->head == nullptr) {
@@ -103,10 +130,10 @@ namespace mx {
             return 0;
         }
         if (temp->value < el->value) {
-            while (temp && temp->value < el->value)
+            while (temp && temp->next && temp->next->value <= el->value)
                 temp = temp->next;
-            if (!temp->next)
-                temp->next = el;
+            if (!temp)
+                line->tail->next = el;
             else {
                 el->next = temp->next;
                 temp->next = el;
@@ -118,9 +145,13 @@ namespace mx {
     Line *smartCopyLine (Line *old_line) {
         Line *sorted = nullptr;
         alloc(sorted);
+        sorted->head = nullptr;
+        sorted->next = nullptr;
+        sorted->tail = nullptr;
         Element *temp = old_line->head;
         Element *new_el = nullptr;
         alloc(new_el);
+        new_el->next = nullptr;
         while (temp) {
             new_el = copyElement(temp);
             if (sorted->head == nullptr) {
@@ -152,9 +183,14 @@ namespace mx {
             return 1;
         Matrix *new_m = nullptr;
         alloc(new_m);
+        new_m->tail = nullptr;
+        new_m->head = nullptr;
         Line *temp = mx->head;
         Line *new_line = nullptr;
         alloc(new_line);
+        new_line->head = nullptr;
+        new_line->tail = nullptr;
+        new_line->next = nullptr;
         while (temp) {
             if (temp->number_row == i_line) {
                 new_line = smartCopyLine(temp);
@@ -179,6 +215,7 @@ namespace mx {
             temp = temp->next;
         }
         printMatrix(new_m, dim->lines, dim->columns);
+        delMatrix(new_m);
         return 0;
     }
 }
