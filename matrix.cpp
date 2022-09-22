@@ -67,21 +67,26 @@ namespace mx {
     }
 
     int delMatrix (Matrix *mx) {
-        Line *line = mx->head;
-        Element *el_to_delete = nullptr;
-        Element *el_save = nullptr;
-        while (line) {
-            el_to_delete = line->head;
-            el_save = line->head->next;
+        Line *line_to_delete = mx->head;
+        Line *line_save = mx->head->next;
+        Element *el_to_delete;
+        Element *el_save;
+        while (line_to_delete) {
+            el_to_delete = line_to_delete->head;
+            el_save = line_to_delete->head->next;
             while (el_to_delete) {
                 delete el_to_delete;
                 el_to_delete = el_save;
                 if (el_save)
                     el_save = el_save->next;
             }
-            line = line->next;
+            delete line_to_delete;
+            line_to_delete = line_save;
+            if (line_save)
+                line_save = line_save->next;
         }
         delete mx;
+        return 0;
     }
 
     Element *copyElement (Element *el) {
@@ -103,9 +108,7 @@ namespace mx {
         new_line->tail = nullptr;
         new_line->number_row = old_line->number_row;
         Element *temp = old_line->head;
-        Element *new_el = nullptr;
-        alloc(new_el);
-        new_el->next = nullptr;
+        Element *new_el;
         while (temp) {
             new_el = copyElement(temp);
             if (new_line->head == nullptr) {
@@ -149,9 +152,7 @@ namespace mx {
         sorted->next = nullptr;
         sorted->tail = nullptr;
         Element *temp = old_line->head;
-        Element *new_el = nullptr;
-        alloc(new_el);
-        new_el->next = nullptr;
+        Element *new_el;
         while (temp) {
             new_el = copyElement(temp);
             if (sorted->head == nullptr) {
@@ -186,11 +187,7 @@ namespace mx {
         new_m->tail = nullptr;
         new_m->head = nullptr;
         Line *temp = mx->head;
-        Line *new_line = nullptr;
-        alloc(new_line);
-        new_line->head = nullptr;
-        new_line->tail = nullptr;
-        new_line->next = nullptr;
+        Line *new_line;
         while (temp) {
             if (temp->number_row == i_line) {
                 new_line = smartCopyLine(temp);
