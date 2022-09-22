@@ -7,8 +7,9 @@ int Menu (Matrix *mx, Dim *dim) {
     if (mx == nullptr || dim == nullptr)
         return -1;
     const char *what[] = {"\nChoose next step", "1. Add element", "2. Print matrix",
-                          "3. Individual task", "4. Exit"};
+                          "3. Individual task", "4. Exit", "Enter number of line to sort"};
     int flag = 0;
+    int choose = 0;
     do {
         for (int i = 1; i < 5; i++)
             cout << what[i] << endl;
@@ -21,9 +22,11 @@ int Menu (Matrix *mx, Dim *dim) {
                 printMatrix (mx, dim->lines, dim->columns);
                 break;
             case 3:
-                individual(mx, dim, 0);
+                enter(choose, what[5]);
+                individual(mx, dim, choose);
                 break;
             case 4:
+                delMatrix(mx);
                 return 0;
             default:
                 cout << "Try again" << endl;
